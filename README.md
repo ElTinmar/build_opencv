@@ -1,3 +1,8 @@
+# Build wheel in manylinux docker 
+```
+sudo docker build -t opencv .
+```
+
 # Install wheel in a conda environment
 
 ```
