@@ -12,7 +12,10 @@ ARG OPENSSL_VERSION=1_1_1w
 # 5.15.0 is hardcoded in opencv-python/patches/patchQtPlugins, so you better use that or modify the patch
 ARG QT_VERSION=5.15.0 
 ARG YASM_VERSION=1.3.0
-ARG CUDA_VERSION=12-3
+ARG CUDA_VERSION_MAJOR=12
+ARG CUDA_VERSION_MINOR=3
+ARG CUDA_VERSION=$CUDA_VERSION_MAJOR.$CUDA_VERSION_MINOR
+
 
 ENV LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
 
@@ -23,11 +26,10 @@ RUN yum install zlib-devel curl-devel xcb-util-renderutil-devel xcb-util-devel x
     curl https://raw.githubusercontent.com/xianyi/OpenBLAS/v0.3.3/cblas.h -o /usr/include/cblas.h 
 
 # Install NVIDIA CUDA toolkit
-RUN yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
-    yum clean all
-    yum -y install cuda-toolkit-${CUDA_VERSION} 
+RUN yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo && \
+    yum clean all && \
+    yum -y install cuda-toolkit-${CUDA_VERSION_MAJOR}-${CUDA_VERSION_MINOR}  
 
-ARG CUDA_VERSION=${CUDA_VERSION/-/.}
 ENV PATH /usr/local/cuda-${CUDA_VERSION}/bin${PATH:+:${PATH}}
 ENV LD_LIBRARY_PATH /usr/local/cuda-${CUDA_VERSION}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
