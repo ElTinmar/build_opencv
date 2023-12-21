@@ -177,9 +177,10 @@ RUN mkdir ~/opencv_sources && \
     git submodule update --init --recursive --remote opencv && \
     /opt/python/cp39-cp39/bin/pip wheel . --verbose
 
-RUN TOOLS_PATH=/opt/_internal/pipx/venvs/auditwheel && \
-    source $TOOLS_PATH/bin/activate && \
+RUN source /opt/_internal/pipx/venvs/auditwheel/bin/activate && \
+    cd ~/opencv_sources/opencv-python && \
     python patch_auditwheel_whitelist.py && \
     deactivate
 
-RUN auditwheel repair opencv_contrib_python_rolling-4.8.0.20231220-cp39-cp39-linux_x86_64.whl
+RUN cd ~/opencv_sources/opencv-python && \
+    auditwheel repair opencv_contrib_python_rolling*.whl
