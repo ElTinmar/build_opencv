@@ -66,7 +66,7 @@ RUN curl -O -L https://download.qt.io/official_releases/qt/5.15/${QT_VERSION}/si
     rm -rf qt-everywhere*
 
 ENV QTDIR /opt/Qt${QT_VERSION}
-ENV PATH "$QTDIR/bin:$PATH"
+ENV PATH ${QTDIR}/bin:${PATH}
 
 RUN mkdir ~/openssl_sources && \
     cd ~/openssl_sources && \
@@ -84,7 +84,7 @@ RUN mkdir ~/nasm_sources && \
     cd ~/nasm_sources && \
     curl -O -L http://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.gz && \
     tar -xf nasm-${NASM_VERSION}.tar.gz && cd nasm-${NASM_VERSION} && ./autogen.sh && \
-    ./configure --prefix="/ffmpeg_build" --bindir="$HOME/bin" && \
+    ./configure --prefix="/ffmpeg_build" --bindir="/bin" && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     cd .. && \
@@ -95,19 +95,17 @@ RUN mkdir ~/yasm_sources && \
     curl -O -L http://www.tortall.net/projects/yasm/releases/yasm-${YASM_VERSION}.tar.gz && \
     tar -xf yasm-${YASM_VERSION}.tar.gz && \
     cd yasm-${YASM_VERSION} && \
-    ./configure --prefix="/ffmpeg_build" --bindir="$HOME/bin" && \
+    ./configure --prefix="/ffmpeg_build" --bindir="/bin" && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     cd .. && \
     rm -rf ~/yasm_sources
 
-ENV PATH "$HOME/bin:$PATH"
-
 RUN mkdir ~/x264_sources && \
     cd ~/x264_sources && \
     git clone --branch stable --depth 1 https://code.videolan.org/videolan/x264.git && \
     cd x264 && \
-    ./configure --prefix="/ffmpeg_build" --bindir="$HOME/bin" --enable-shared && \
+    ./configure --prefix="/ffmpeg_build" --bindir="/bin" --enable-shared && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     cd .. && \
@@ -166,7 +164,6 @@ RUN curl -O -L https://github.com/ccache/ccache/releases/download/v${CCACHE_VERS
 
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/ffmpeg_build/lib/:$QTDIR/lib
 ENV LDFLAGS -L/ffmpeg_build/lib
-ENV PATH "$HOME/bin:$PATH"
 ENV PKG_CONFIG_PATH /usr/local/lib/pkgconfig:/ffmpeg_build/lib/pkgconfig
 ENV CMAKE_ARGS "-DWITH_CUDA=ON -DENABLE_FAST_MATH=1 -DCUDA_FAST_MATH=1 -DBUILD_opencv_sfm=OFF -DWITH_FFMPEG=ON -DWITH_GTK=OFF -DWITH_QT=ON" 
 ENV CI_BUILD=1 
